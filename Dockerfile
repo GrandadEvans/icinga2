@@ -3,7 +3,7 @@
 
 FROM debian:jessie
 
-MAINTAINER Jordan Jethwa
+MAINTAINER Jere Virta
 
 ENV APACHE2_HTTP=REDIRECT \
     DEBIAN_FRONTEND=noninteractive \
@@ -20,22 +20,27 @@ ARG GITREF_ICINGAWEB2=master
 ARG GITREF_DIRECTOR=master
 ARG GITREF_MODGRAPHITE=master
 
+RUN mkdir -p /var/spool/postfix/etc/
+RUN ln -snf /etc/services /var/spool/postfix/etc/services
+
 RUN apt-get -qq update \
      && apt-get -qqy upgrade \
      && apt-get -qqy install --no-install-recommends \
           apache2 \
           ca-certificates \
           curl \
+	  cron \
           mailutils \
           mysql-client \
           mysql-server \
           php5-curl \
           php5-ldap \
           php5-mysql \
-          procps \
+          postfix \
+	  procps \
           pwgen \
           snmp \
-          ssmtp \
+          ssh \
           sudo \
           supervisor \
           unzip \
@@ -53,6 +58,7 @@ RUN wget --quiet -O - https://packages.icinga.org/icinga.key \
           icingacli \
           icingaweb2 \
           monitoring-plugins \
+	  install build-essential graphite-web graphite-carbon python-dev libapache2-mod-wsgi python-pymysql python-mysqldb \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/*
 
@@ -84,7 +90,7 @@ RUN mkdir -p /usr/local/share/icingaweb2/modules/ \
         /bin/ping6 \
         /usr/lib/nagios/plugins/check_icmp
 
-EXPOSE 80 443 5665
+EXPOSE 22 80 443 5665
 
 # Initialize and run Supervisor
 ENTRYPOINT ["/opt/run"]
