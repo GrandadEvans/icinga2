@@ -1,7 +1,7 @@
 version: '2'
 services:
   icinga2:
-    image: jordan/icinga2
+    image: jerenius/icinga2
     restart: on-failure:5
     hostname: icinga2
     environment:
@@ -12,29 +12,18 @@ services:
       - ICINGA2_FEATURE_GRAPHITE_HOST=graphite
       - ICINGA2_FEATURE_GRAPHITE_PORT=2003
       - ICINGA2_FEATURE_GRAPHITE_URL=http://graphite
-      #- ICINGAWEB2_ADMIN_USER=icingaadmin
-      #- ICINGAWEB2_ADMIN_PASS=icinga
+      - ICINGAWEB2_ADMIN_USER=admin
+      - ICINGAWEB2_ADMIN_PASS=icinga
       #- ICINGA2_USER_FULLNAME=Icinga2 Docker Monitoring Instance
+    ports:
+      - "80:80"
+      - "5665:5665"
+      - "3306:3306"
     volumes:
-      - ./icinga/cache:/var/cache/icinga2
-      - ./icinga/certs:/etc/apache2/ssl:ro
-      - ./icinga/etc/icinga2:/etc/icinga2
-      - ./icinga/etc/icingaweb2:/etc/icingaweb2
-      - ./icinga/lib/icinga:/var/lib/icinga2
-      - ./icinga/lib/mysql:/var/lib/mysql
-      - ./icinga/lib/php5/sessions:/var/lib/php5/sessions
-      - ./icinga/log/apache2:/var/log/apache2
-      - ./icinga/log/icinga2:/var/log/icinga2
-      - ./icinga/log/icingaweb2:/var/log/icingaweb2
-      - ./icinga/log/mysql:/var/log/mysql
-      - ./icinga/spool:/var/spool/icinga2
-      # If you want to enable outbound e-mail, create the files
-      #  - ./ssmtp/ssmtp.conf
-      #  - ./ssmtp/revaliases
-      #  and configure to your corresponding mail setup.
-      #  See: https://github.com/jjethwa/icinga2#sending-notification-mails
-      #- ./ssmtp/revaliases:/etc/ssmtp/revaliases:ro
-      #- ./ssmtp/ssmtp.conf:/etc/ssmtp/ssmtp.conf:ro
+      - /opt/icinga2/etc:/etc/icinga2
+      - /opt/icinga2/lib:/var/lib/icinga2
+      - /opt/icinga2/log:/var/log/icinga2
+      - /opt/icinga2/mysql:/var/lib/mysql
   graphite:
     image: bebehei/graphite:latest
     restart: on-failure:5

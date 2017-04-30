@@ -30,6 +30,7 @@ RUN apt-get -qq update \
           ca-certificates \
           curl \
 	  cron \
+	  logrotate \
           mailutils \
           mysql-client \
           mysql-server \
@@ -39,7 +40,8 @@ RUN apt-get -qq update \
           postfix \
 	  procps \
           pwgen \
-          snmp \
+          rsyslog \
+	  snmp \
           ssh \
           sudo \
           supervisor \
@@ -58,7 +60,6 @@ RUN wget --quiet -O - https://packages.icinga.org/icinga.key \
           icingacli \
           icingaweb2 \
           monitoring-plugins \
-	  install build-essential graphite-web graphite-carbon python-dev libapache2-mod-wsgi python-pymysql python-mysqldb \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/*
 
