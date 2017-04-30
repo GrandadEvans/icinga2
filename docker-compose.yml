@@ -25,9 +25,12 @@ services:
       - /opt/icinga2/log:/var/log/icinga2
       - /opt/icinga2/mysql:/var/lib/mysql
   graphite:
-    image: bebehei/graphite:latest
+    image: sitespeedio/graphite:latest
     restart: on-failure:5
     hostname: graphite
+    ports:
+    - "2003:2003"
+    - "8080:80"
     volumes:
       - ./graphite/lib:/var/lib/graphite
       - ./graphite/log/apache:/var/log/apache2
