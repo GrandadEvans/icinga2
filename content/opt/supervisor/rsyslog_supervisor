@@ -1,0 +1,8 @@
+#!/bin/bash
+
+service rsyslog start
+
+# Allow any signal which would kill a process to stop server
+trap "service rsyslog stop" HUP INT QUIT ABRT ALRM TERM TSTP
+
+while pgrep -u root rsyslog > /dev/null; do sleep 5; done
