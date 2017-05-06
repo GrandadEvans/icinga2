@@ -1,0 +1,8 @@
+#!/bin/bash
+
+service postfix start
+
+# Allow any signal which would kill a process to stop server
+trap "service postfix stop" HUP INT QUIT ABRT ALRM TERM TSTP
+
+while pgrep -u root master > /dev/null; do sleep 5; done
