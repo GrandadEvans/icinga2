@@ -1,7 +1,7 @@
 # Dockerfile for icinga2 with icingaweb2
 # https://github.com/jjethwa/icinga2
 
-FROM debian:jessie
+FROM debian:stretch
 
 MAINTAINER Jere Virta
 
@@ -30,6 +30,7 @@ RUN apt-get -qq update \
           ca-certificates \
           curl \
 	  cron \
+	  libdbd-mysql-perl \
 	  logrotate \
           mailutils \
           mysql-client \
@@ -42,7 +43,6 @@ RUN apt-get -qq update \
           pwgen \
           rsyslog \
 	  snmp \
-          ssh \
           sudo \
           supervisor \
           unzip \
@@ -52,23 +52,26 @@ RUN apt-get -qq update \
 
 RUN wget --quiet -O - https://packages.icinga.org/icinga.key \
      | apt-key add - \
-     && echo "deb http://packages.icinga.org/debian icinga-jessie main" > /etc/apt/sources.list.d/icinga2.list \
+     && echo "deb http://packages.icinga.org/debian icinga-$(lsb_release -cs) main" > /etc/apt/sources.list.d/icinga2.list \
      && apt-get -qq update \
      && apt-get -qqy install --no-install-recommends \
           icinga2 \
           icinga2-ido-mysql \
           icingacli \
           icingaweb2 \
+          icingaweb2-module-monitoring \ 
           monitoring-plugins \
+          nagios-nrpe-plugin \
+          nagios-plugins-contrib \
+          nagios-snmp-plugins \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/*
 
 ADD content/ /
 
-# Temporary hack to get icingaweb2 modules via git
 RUN mkdir -p /usr/local/share/icingaweb2/modules/ \
-    && wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2/archive/${GITREF_ICINGAWEB2}.tar.gz" \
-    | tar xz --strip-components=2 --directory=/usr/local/share/icingaweb2/modules -f - icingaweb2-${GITREF_ICINGAWEB2}/modules/monitoring icingaweb2-${GITREF_ICINGAWEB2}/modules/doc \
+#    && wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2/archive/${GITREF_ICINGAWEB2}.tar.gz" \
+#    | tar xz --strip-components=2 --directory=/usr/local/share/icingaweb2/modules -f - icingaweb2-${GITREF_ICINGAWEB2}/modules/monitoring icingaweb2-${GITREF_ICINGAWEB2}/modules/doc \
 # Icinga Director
     && mkdir -p /usr/local/share/icingaweb2/modules/director/ \
     && wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2-module-director/archive/${GITREF_DIRECTOR}.tar.gz" \
