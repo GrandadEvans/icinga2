@@ -34,7 +34,8 @@ RUN apt-get -qq update \
 	  gnupg \
 	  libdbd-mysql-perl \
 	  logrotate \
-          mailutils \
+          lsb-release \
+ 	  mailutils \
           mariadb-client \
           mariadb-server \
           php7.0-curl \
@@ -53,7 +54,7 @@ RUN apt-get -qq update \
      && rm -rf /var/lib/apt/lists/*
 
 RUN export DEBIAN_FRONTEND=noninteractive \
- && curl -s https://packages.icinga.org/icinga.key \
+ &&  wget http://packages.icinga.com/icinga.key \
      && apt-key add icinga.key \
      && echo "deb http://packages.icinga.org/debian icinga-$(lsb_release -cs) main" > /etc/apt/sources.list.d/icinga2.list \
      && apt-get -qq update \
@@ -72,20 +73,21 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
 ADD content/ /
 
+
+
+
+
 RUN mkdir -p /usr/local/share/icingaweb2/modules/ \
-#    && wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2/archive/${GITREF_ICINGAWEB2}.tar.gz" \
-#    | tar xz --strip-components=2 --directory=/usr/local/share/icingaweb2/modules -f - icingaweb2-${GITREF_ICINGAWEB2}/modules/monitoring icingaweb2-${GITREF_ICINGAWEB2}/modules/doc \
 # Icinga Director
-    && mkdir -p /usr/local/share/icingaweb2/modules/director/ \
-    && wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2-module-director/archive/${GITREF_DIRECTOR}.tar.gz" \
-    | tar xz --strip-components=1 --directory=/usr/local/share/icingaweb2/modules/director --exclude=.gitignore -f - \
-    && icingacli module enable director \
+ && mkdir -p /usr/local/share/icingaweb2/modules/director/ \
+ && wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2-module-director/archive/${GITREF_DIRECTOR}.tar.gz" \
+ | tar xz --strip-components=1 --directory=/usr/local/share/icingaweb2/modules/director --exclude=.gitignore -f - \
 # Icingaweb2 Graphite
-    && mkdir -p /usr/local/share/icingaweb2/modules/graphite \
-    && wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2-module-graphite/archive/${GITREF_ICINGAWEB2}.tar.gz" \
-    | tar xz --strip-components=1 --directory=/usr/local/share/icingaweb2/modules/graphite -f - icingaweb2-module-graphite-${GITREF_MODGRAPHITE}/ \
-    && cp -r /usr/local/share/icingaweb2/modules/graphite/sample-config/icinga2/ /etc/icingaweb2/modules/graphite \
+ && mkdir -p /usr/local/share/icingaweb2/modules/graphite \
+ && wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2-module-graphite/archive/${GITREF_MODGRAPHITE}.tar.gz" \
+ | tar xz --strip-components=1 --directory=/usr/local/share/icingaweb2/modules/graphite -f - icingaweb2-module-graphite-${GITREF_MODGRAPHITE}/ 
 # Final fixes
+RUN true \
     && mv /etc/icingaweb2/ /etc/icingaweb2.dist \
     && mkdir /etc/icingaweb2 \
     && mv /etc/icinga2/ /etc/icinga2.dist \
