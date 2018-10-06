@@ -6,11 +6,11 @@ The dockerhub-repository is located at [https://hub.docker.com/r/jordan/icinga2/
 
 This build is automated by push for the git-repo. Just crawl it via:
 
-    docker pull jordan/icinga2
+    docker pull jerenius/icinga2
 
 ## Image details
 
-1. Based on debian:jessie
+1. Based on debian:stretch
 1. Key-Features:
    - icinga2
    - icingacli

@@ -30,14 +30,16 @@ RUN apt-get -qq update \
           ca-certificates \
           curl \
 	  cron \
+	  dnsutils \
+	  gnupg \
 	  libdbd-mysql-perl \
 	  logrotate \
           mailutils \
-          mysql-client \
-          mysql-server \
-          php5-curl \
-          php5-ldap \
-          php5-mysql \
+          mariadb-client \
+          mariadb-server \
+          php7.0-curl \
+          php7.0-ldap \
+          php7.0-mysql \
           postfix \
 	  procps \
           pwgen \
@@ -50,8 +52,9 @@ RUN apt-get -qq update \
      && apt-get clean \
      && rm -rf /var/lib/apt/lists/*
 
-RUN wget --quiet -O - https://packages.icinga.org/icinga.key \
-     | apt-key add - \
+RUN export DEBIAN_FRONTEND=noninteractive \
+ && curl -s https://packages.icinga.org/icinga.key \
+     && apt-key add icinga.key \
      && echo "deb http://packages.icinga.org/debian icinga-$(lsb_release -cs) main" > /etc/apt/sources.list.d/icinga2.list \
      && apt-get -qq update \
      && apt-get -qqy install --no-install-recommends \
