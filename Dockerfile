@@ -1,5 +1,5 @@
 # Dockerfile for icinga2 with icingaweb2
-# https://github.com/jjethwa/icinga2
+# https://github.com/jerenius/icinga2
 
 FROM debian:stretch
 
