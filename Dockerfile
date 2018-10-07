@@ -73,10 +73,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 
 ADD content/ /
 
-
-
-
-
 RUN mkdir -p /usr/local/share/icingaweb2/modules/ \
 # Icinga Director
  && mkdir -p /usr/local/share/icingaweb2/modules/director/ \
