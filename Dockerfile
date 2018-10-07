@@ -94,6 +94,7 @@ RUN true \
     && mkdir /etc/icinga2 \
     && usermod -aG icingaweb2 www-data \
     && usermod -aG nagios www-data \
+    && chown www-data.www-data /var/lib/php/sessions \
     && chmod u+s,g+s \
         /bin/ping \
         /bin/ping6 \
